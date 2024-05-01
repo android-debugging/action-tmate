@@ -4,18 +4,21 @@ on: workflow_dispatch
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@v3
-      - uses: ./
+      - uses: rokibhasansagar/slimhub_actions@main
+      - uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 61440
+          temp-reserve-mb: 51200
+          swap-size-mb: 24576
+          remove-android: "true"
+          remove-dotnet: "true"
+          remove-haskell: "true"
+          remove-codeql: "true"
+      - uses: actions/checkout@v2
+      - uses: lhotari/action-upterm@v1
         with:
           limit-access-to-actor: true
-          detached: true
-          connect-timeout-seconds: 60
-      - run: |
-          echo "A busy loop"
-          for value in $(seq 10)
-          do
-            echo "Value: $value"
-            echo "value $value" >>counter.txt
-            sleep 1
-          done
+          wait-timeout-minutes: 360
